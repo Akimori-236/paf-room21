@@ -9,9 +9,9 @@ public interface RoomRepositoryInterface {
 
     Boolean save(Room room);
     
-    List<Room> findAll();
+    List<Room> getAll();
 
-    Room findById(Integer id);
+    Room getById(Integer id);
 
     int update(Room room);
 

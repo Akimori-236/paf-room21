@@ -22,12 +22,12 @@ public class RoomService {
         return roomRepo.save(room);
     }
 
-    public List<Room> findAll() {
-        return roomRepo.findAll();
+    public List<Room> getAll() {
+        return roomRepo.getAll();
     }
 
-    public Room findById(Integer id) {
-        return roomRepo.findById(id);
+    public Room getById(Integer id) {
+        return roomRepo.getById(id);
     }
 
     public int update(Room room) {

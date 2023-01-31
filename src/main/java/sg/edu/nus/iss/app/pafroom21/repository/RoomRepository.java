@@ -1,7 +1,5 @@
 package sg.edu.nus.iss.app.pafroom21.repository;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,34 +31,33 @@ public class RoomRepository implements RoomRepositoryInterface {
         result = template.queryForObject(countSQL, Integer.class);
         if (result == null) {
             return 0;
+        } else {
+            return result;
         }
-        return result;
     }
 
     // INSERT INTO room(room_type, price) VALUES(?, ?)
     @Override
     public Boolean save(Room room) {
-        Boolean saved = false;
         // execute SQL
-        saved = template.execute(insertSQL, (PreparedStatementCallback<Boolean>) ps -> {
+        return template.execute(insertSQL, (PreparedStatementCallback<Boolean>) ps -> {
             // inject variables into the SQL statement
             ps.setString(1, room.getRoomType());
             ps.setInt(2, room.getPrice());
             Boolean reply = ps.execute();
             return reply;
         });
-        return saved;
     }
 
     // SELECT * FROM room
     @Override
-    public List<Room> findAll() {
+    public List<Room> getAll() {
         // mapping each row of SQL record to a Room class instance
         return template.query(selectSQL, BeanPropertyRowMapper.newInstance(Room.class));
     }
 
     @Override
-    public Room findById(Integer id) {
+    public Room getById(Integer id) {
         Room room = template.queryForObject(selectByIdSQL, BeanPropertyRowMapper.newInstance(Room.class), id);
         return room;
     }
@@ -70,13 +67,10 @@ public class RoomRepository implements RoomRepositoryInterface {
     public int update(Room room) {
         int updated = 0;
         // returns number of rows affected
-        updated = template.update(updateSQL, new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setString(1, room.getRoomType());
-                ps.setInt(2, room.getPrice());
-                ps.setInt(3, room.getId());
-            }
+        updated = template.update(updateSQL, (PreparedStatementSetter) ps -> {
+            ps.setString(1, room.getRoomType());
+            ps.setInt(2, room.getPrice());
+            ps.setInt(3, room.getId());
         });
         return updated;
     }
@@ -85,13 +79,7 @@ public class RoomRepository implements RoomRepositoryInterface {
     @Override
     public int deleteById(Integer id) {
         int deleted = 0;
-
-        deleted = template.update(deleteSQL, new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setInt(1, id);
-            }
-        });
+        deleted = template.update(deleteSQL, (PreparedStatementSetter) ps -> ps.setInt(1, id));
         return deleted;
     }
 }
