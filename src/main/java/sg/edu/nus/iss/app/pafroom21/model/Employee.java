@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.app.pafroom21.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +15,5 @@ public class Employee {
     private String firstName;
     private String lastName;
     private Integer salary;
-    private List<Dependant> dependants;
+    private List<Dependant> dependants = new LinkedList<>();
 }

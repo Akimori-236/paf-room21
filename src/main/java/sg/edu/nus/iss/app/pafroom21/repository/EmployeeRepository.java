@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import sg.edu.nus.iss.app.pafroom21.model.Dependant;
 import sg.edu.nus.iss.app.pafroom21.model.Employee;
 
 @Repository
@@ -30,6 +31,7 @@ public class EmployeeRepository implements EmployeeRepositoryInterface {
             @Nullable
             public List<Employee> extractData(ResultSet rs) throws SQLException, DataAccessException {
                 List<Employee> employees = new ArrayList<>();
+
                 // iterate through the rows
                 while (rs.next()) {
                     Employee e = new Employee();
@@ -38,9 +40,24 @@ public class EmployeeRepository implements EmployeeRepositoryInterface {
                     e.setLastName(rs.getString("last_name"));
                     e.setSalary(rs.getInt("salary"));
 
+                    Dependant d = new Dependant();
+                    d.setBirthDate(rs.getDate("birth_date"));
+                    d.setDependantName(rs.getString("dependant_name"));
+                    d.setEmployee(e);
+                    d.setId(rs.getInt("dep_id"));
+                    d.setRelationship(rs.getString("relationship"));
+
                     if (!employees.contains(e)) {
+                        e.getDependants().add(d);
                         employees.add(e);
+                    } else {
+                        for (Employee emp : employees) {
+                            if (emp == d.getEmployee()) {
+                                // emp.getDependants().add(d);
+                            }
+                        }
                     }
+
                 }
                 return employees;
             }
