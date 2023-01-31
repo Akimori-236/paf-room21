@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.app.pafroom21.repository;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class RoomRepository implements RoomRepositoryInterface {
     String selectByIdSQL = "SELECT * FROM room WHERE id=?";
     String insertSQL = "INSERT INTO room(room_type, price) VALUES(?, ?)";
     String updateSQL = "UPDATE room SET room_type=?, price=? WHERE id=?";
-    String deleteSQL = "DELETE room WHERE id=?";
+    String deleteSQL = "DELETE FROM room WHERE id=?";
 
     // SELECT COUNT(*) FROM room
     @Override
@@ -39,21 +40,26 @@ public class RoomRepository implements RoomRepositoryInterface {
     // INSERT INTO room(room_type, price) VALUES(?, ?)
     @Override
     public Boolean save(Room room) {
+
+        Boolean saved = false;
         // execute SQL
-        return template.execute(insertSQL, (PreparedStatementCallback<Boolean>) ps -> {
+        saved = template.execute(insertSQL, (PreparedStatementCallback<Boolean>) ps -> {
             // inject variables into the SQL statement
             ps.setString(1, room.getRoomType());
             ps.setInt(2, room.getPrice());
-            Boolean reply = ps.execute();
-            return reply;
+            Boolean result = ps.execute();
+            return result;
         });
+        return saved;
     }
 
     // SELECT * FROM room
     @Override
     public List<Room> getAll() {
+        List<Room> roomList = new LinkedList<>();
         // mapping each row of SQL record to a Room class instance
-        return template.query(selectSQL, BeanPropertyRowMapper.newInstance(Room.class));
+        roomList = template.query(selectSQL, BeanPropertyRowMapper.newInstance(Room.class));
+        return roomList;
     }
 
     @Override

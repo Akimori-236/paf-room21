@@ -2,8 +2,6 @@ package sg.edu.nus.iss.app.pafroom21.controller;
 
 import java.util.List;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,12 +49,12 @@ public class RoomRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> insertRoom(@RequestBody Room room) {
+    public ResponseEntity<String> insertRoom(@RequestBody Room room) {
         Boolean isInserted = roomSvc.save(room);
         if (isInserted) {
-            return new ResponseEntity<>(isInserted, HttpStatus.CREATED);
+            return new ResponseEntity<>("Entry created", HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(isInserted, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -66,7 +64,7 @@ public class RoomRestController {
         Integer updated = 0;
         updated = roomSvc.update(room);
         if (updated == 0) {
-            return new ResponseEntity<>(updated, HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
         } else {
             return new ResponseEntity<>(updated, HttpStatus.OK);
         }
